@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 200px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .status {
+      margin-bottom: 10px;
+      padding: 5px;
+      border-radius: 3px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .active {
+      background: #4CAF50;
+      color: white;
+    }
+    .inactive {
+      background: #f44336;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1976D2;
+    }
+    .instructions {
+      font-size: 12px;
+      margin-top: 10px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div id="status" class="status"></div>
+  <button id="toggleBtn">Toggle IME</button>
+  <div class="instructions">
+    <p><strong>Hotkey:</strong> Ctrl+Shift+Y</p>
+    <p><strong>Space:</strong> Accept suggestion</p>
+    <p><strong>Enter:</strong> Commit as-is</p>
+    <p><strong>Arrows:</strong> Navigate suggestions</p>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

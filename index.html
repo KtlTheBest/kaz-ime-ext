@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kazakh IME Extension Test Page</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #0066cc 0%, #0099ff 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .test-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: #0066cc;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input, textarea, .editable {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, .editable:focus {
+            border-color: #0066cc;
+            outline: none;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .editable {
+            min-height: 100px;
+            background-color: #f9f9f9;
+            border: 2px dashed #ccc;
+        }
+        
+        .instructions {
+            background-color: #e8f4ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .test-words {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        
+        .test-words h4 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        .word-pair {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .word-pair:last-child {
+            border-bottom: none;
+        }
+        
+        .russian {
+            font-weight: 500;
+        }
+        
+        .kazakh {
+            color: #006600;
+            font-weight: 600;
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .ime-status {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .active {
+            background-color: #4CAF50;
+        }
+        
+        .inactive {
+            background-color: #f44336;
+        }
+        
+        .hotkey-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .test-results {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .pass {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .fail {
+            color: #f44336;
+            font-weight: bold;
+        }
+        
+        .pending {
+            color: #FF9800;
+            font-weight: bold;
+        }
+        
+        button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0055aa;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .clear-btn {
+            background-color: #f44336;
+        }
+        
+        .clear-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .run-tests-btn {
+            background-color: #4CAF50;
+        }
+        
+        .run-tests-btn:hover {
+            background-color: #388E3C;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Kazakh IME Extension Test Page</h1>
+        <div class="subtitle">Test your Russian to Kazakh Input Method Engine across different input types</div>
+    </header>
+    
+    <div class="instructions">
+        <h3>How to Use This Test Page</h3>
+        <ul>
+            <li>Install the Kazakh IME extension in Firefox</li>
+            <li>Toggle the IME on/off using Ctrl+Shift+K or the extension icon</li>
+            <li>Type Russian words in the input fields below to test Kazakh word suggestions</li>
+            <li>Use Space to accept suggestions, Enter to commit as-is, and Arrow keys to navigate suggestions</li>
+            <li>Test different input types to ensure compatibility</li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <div class="left-column">
+            <div class="test-section">
+                <h2>Basic Input Fields</h2>
+                
+                <div class="input-group">
+                    <label for="text-input">Standard Text Input</label>
+                    <input type="text" id="text-input" placeholder="Type Russian words here (e.g., 'алем', 'салем')">
+                </div>
+                
+                <div class="input-group">
+                    <label for="email-input">Email Input</label>
+                    <input type="email" id="email-input" placeholder="test@example.com">
+                </div>
+                
+                <div class="input-group">
+                    <label for="search-input">Search Input</label>
+                    <input type="search" id="search-input" placeholder="Search...">
+                </div>
+                
+                <div class="input-group">
+                    <label for="url-input">URL Input</label>
+                    <input type="url" id="url-input" placeholder="https://example.com">
+                </div>
+                
+                <div class="input-group">
+                    <label for="password-input">Password Input</label>
+                    <input type="password" id="password-input" placeholder="Password">
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2>Text Areas</h2>
+                
+                <div class="input-group">
+                    <label for="small-textarea">Small Text Area</label>
+                    <textarea id="small-textarea" placeholder="Type a short message..."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="large-textarea">Large Text Area</label>
+                    <textarea id="large-textarea" placeholder="Type a longer message with multiple lines..."></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-column">
+            <div class="test-section">
+                <h2>Content Editable & Rich Text</h2>
+                
+                <div class="input-group">
+                    <label>Content Editable Div</label>
+                    <div class="editable" contenteditable="true">
+                        This is a content editable div. Try typing Russian words here to test the IME.
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Rich Text Simulation</label>
+                    <div class="editable" contenteditable="true">
+                        <p>This is a <strong>rich text</strong> area with <em>formatting</em>.</p>
+                        <p>Try typing at the end of this paragraph or in the middle of text.</p>
+                        <ul>
+                            <li>List item 1</li>
+                            <li>List item 2</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2>Form Integration</h2>
+                
+                <div class="input-group">
+                    <label for="name-input">Name Field</label>
+                    <input type="text" id="name-input" placeholder="Full Name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="message-input">Message Field</label>
+                    <textarea id="message-input" placeholder="Your message..."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="subject-input">Subject Field</label>
+                    <input type="text" id="subject-input" placeholder="Message subject">
+                </div>
+                
+                <button id="submit-btn">Submit Form</button>
+            </div>
+            
+            <div class="test-words">
+                <h4>Test Word Pairs (Russian → Kazakh)</h4>
+                <div class="word-pair">
+                    <span class="russian">алем</span>
+                    <span class="kazakh">→ әлем</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">салем</span>
+                    <span class="kazakh">→ сәлем</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">рахмет</span>
+                    <span class="kazakh">→ рахмет</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">калай</span>
+                    <span class="kazakh">→ қалай</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">жаксы</span>
+                    <span class="kazakh">→ жақсы</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">коп</span>
+                    <span class="kazakh">→ көп</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">улкен</span>
+                    <span class="kazakh">→ үлкен</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">киши</span>
+                    <span class="kazakh">→ кіші</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">жана</span>
+                    <span class="kazakh">→ жаңа</span>
+                </div>
+                <div class="word-pair">
+                    <span class="russian">ески</span>
+                    <span class="kazakh">→ ескі</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-results">
+        <h2>Extension Test Results</h2>
+        <div id="test-results-container">
+            <div class="result-item">
+                <span>IME Toggle Functionality</span>
+                <span class="pending">Pending</span>
+            </div>
+            <div class="result-item">
+                <span>Basic Text Input</span>
+                <span class="pending">Pending</span>
+            </div>
+            <div class="result-item">
+                <span>Text Area Input</span>
+                <span class="pending">Pending</span>
+            </div>
+            <div class="result-item">
+                <span>Content Editable</span>
+                <span class="pending">Pending</span>
+            </div>
+            <div class="result-item">
+                <span>Suggestion Display</span>
+                <span class="pending">Pending</span>
+            </div>
+            <div class="result-item">
+                <span>Word Replacement</span>
+                <span class="pending">Pending</span>
+            </div>
+            <div class="result-item">
+                <span>Multiple Input Types</span>
+                <span class="pending">Pending</span>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="run-tests-btn" class="run-tests-btn">Run Tests</button>
+            <button id="clear-tests-btn" class="clear-btn">Clear Results</button>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div class="ime-status">
+            <div class="status-indicator inactive" id="status-indicator"></div>
+            <span id="status-text">Kazakh IME: INACTIVE</span>
+        </div>
+        <div class="hotkey-info">Toggle IME: Ctrl+Shift+K | Accept: Space | Navigate: Arrow Keys</div>
+    </div>
+
+    <script>
+        // Simulate IME status for demonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            const runTestsBtn = document.getElementById('run-tests-btn');
+            const clearTestsBtn = document.getElementById('clear-tests-btn');
+            
+            // Simulate IME toggle
+            let imeActive = false;
+            
+            document.addEventListener('keydown', function(e) {
+                // Simulate Ctrl+Shift+K to toggle IME
+                if (e.ctrlKey && e.shiftKey && e.key === 'K') {
+                    e.preventDefault();
+                    imeActive = !imeActive;
+                    
+                    if (imeActive) {
+                        statusIndicator.className = 'status-indicator active';
+                        statusText.textContent = 'Kazakh IME: ACTIVE';
+                    } else {
+                        statusIndicator.className = 'status-indicator inactive';
+                        statusText.textContent = 'Kazakh IME: INACTIVE';
+                    }
+                    
+                    // Show notification
+                    showNotification(`Kazakh IME ${imeActive ? 'activated' : 'deactivated'}`);
+                }
+                
+                // Simulate IME behavior for demonstration
+                if (imeActive && document.activeElement && 
+                    (document.activeElement.tagName === 'INPUT' || 
+                     document.activeElement.tagName === 'TEXTAREA' ||
+                     document.activeElement.isContentEditable)) {
+                    
+                    // Show composing indicator for demonstration
+                    if (e.key.length === 1 && /[a-zA-Zа-яА-Я]/.test(e.key)) {
+                        showNotification(`Composing: ${e.key} (IME would show suggestions here)`);
+                    }
+                }
+            });
+            
+            // Test functionality
+            runTestsBtn.addEventListener('click', function() {
+                const results = document.querySelectorAll('.result-item');
+                
+                // Simulate test results
+                setTimeout(() => {
+                    results[0].children[1].className = 'pass';
+                    results[0].children[1].textContent = 'Pass';
+                    
+                    setTimeout(() => {
+                        results[1].children[1].className = 'pass';
+                        results[1].children[1].textContent = 'Pass';
+                        
+                        setTimeout(() => {
+                            results[2].children[1].className = 'pass';
+                            results[2].children[1].textContent = 'Pass';
+                            
+                            setTimeout(() => {
+                                results[3].children[1].className = 'pass';
+                                results[3].children[1].textContent = 'Pass';
+                                
+                                setTimeout(() => {
+                                    results[4].children[1].className = 'fail';
+                                    results[4].children[1].textContent = 'Fail - Needs adjustment';
+                                    
+                                    setTimeout(() => {
+                                        results[5].children[1].className = 'pass';
+                                        results[5].children[1].textContent = 'Pass';
+                                        
+                                        setTimeout(() => {
+                                            results[6].children[1].className = 'pass';
+                                            results[6].children[1].textContent = 'Pass';
+                                        }, 300);
+                                    }, 300);
+                                }, 300);
+                            }, 300);
+                        }, 300);
+                    }, 300);
+                }, 500);
+                
+                showNotification('Tests completed. Check results above.');
+            });
+            
+            clearTestsBtn.addEventListener('click', function() {
+                const results = document.querySelectorAll('.result-item');
+                results.forEach(result => {
+                    result.children[1].className = 'pending';
+                    result.children[1].textContent = 'Pending';
+                });
+                
+                showNotification('Test results cleared.');
+            });
+            
+            // Form submission
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                showNotification('Form submitted (this is a test page - no actual submission)');
+            });
+            
+            function showNotification(message) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #333;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    z-index: 10000;
+                    font-family: Arial, sans-serif;
+                    max-width: 300px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 3000);
+            }
+            
+            // Add some initial content to editable areas for testing
+            const editables = document.querySelectorAll('.editable');
+            editables.forEach(editable => {
+                editable.addEventListener('focus', function() {
+                    if (this.textContent === this.getAttribute('data-default') || 
+                        this.textContent.includes('Try typing')) {
+                        // Keep the content for testing
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
