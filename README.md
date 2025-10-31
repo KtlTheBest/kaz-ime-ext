@@ -12,6 +12,8 @@ A Firefox browser extension that provides an Input Method Engine (IME) for conve
 - **Intuitive Controls**: Easy-to-use keyboard shortcuts for navigation and selection
 - **Non-intrusive**: Works only when enabled and doesn't interfere with normal browser operation
 
+![demo.jpg](demo.jpg)
+
 ## ⌨️ Keyboard Controls
 
 | Key | Action |
