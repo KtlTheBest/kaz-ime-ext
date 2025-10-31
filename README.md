@@ -25,7 +25,7 @@ A Firefox browser extension that provides an Input Method Engine (IME) for conve
 | **↑/↓** | Navigate through suggestions |
 | **Tab** | Cycle through suggestions |
 | **Backspace** | Delete characters |
-| **Ctrl+Shift+K** | Toggle IME on/off |
+| **Ctrl+Shift+Y** | Toggle IME on/off |
 
 ## 🏗️ Project Structure
 
